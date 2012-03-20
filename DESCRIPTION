@@ -1,0 +1,18 @@
+Package: iBBiG
+Type: Package
+Title: Iterative Binary Biclustering of Genesets
+Version: 0.99.2
+Date: 2011-11-23
+Author: Daniel Gusenleitner, Aedin Culhane
+Maintainer: Aedin Culhane <aedin@jimmy.harvard.edu>
+Depends: biclust
+Imports: stats4,xtable,ade4
+Suggests: methods
+Description: iBBiG is a bi-clustering algorithm which is optimizes for binary data analysis. We apply it to meta-gene set analysis of large numbers of gene expression datasets. The iterative algorithm extracts groups of phenotypes from multiple studies that are associated with similar gene sets. iBBiG does not require prior knowledge of the number or scale of clusters and allows discovery of clusters with diverse sizes
+Reference: Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane
+        AC. iBBiG: Iterative Binary Bi-clustering of Gene Sets.
+        Bioinformatics. Submitted
+License: Artistic-2.0
+URL: http://bcb.dfci.harvard.edu/~aedin/publications/
+biocViews: Bioinformatics, Clustering,Annotation
+Packaged: 2012-03-19 17:47:10 UTC; vobencha

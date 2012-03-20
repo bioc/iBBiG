@@ -1,0 +1,189 @@
+\documentclass[a4paper]{article}
+
+
+%\VignetteIndexEntry{iBBiG User Manual}
+%\VignettePackage{biclust}
+%\VignetteDepends{ade4}
+%\VignetteDepends{xtable}
+%\VignetteDepends{stats4}
+
+\usepackage{Sweave}
+\usepackage{amsmath}
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage[numbers]{natbib}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{\textit{#1}}
+\newcommand{\Rpackage}[1]{\textit{#1}}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+
+\title{Introduction to iBBiG}
+\author{Aedin Culhane, Daniel Gusenleitner}
+
+\begin{document}
+
+
+\maketitle
+
+
+<<setup,echo=FALSE,results=hide, eval=TRUE>>==
+oldopt <- options(digits=3)
+options(width=60)
+on.exit( {options(oldopt)} )
+library(iBBiG)
+@
+
+
+
+\section{iBBiG}
+Iterative Binary Bi-clustering of Gene sets (iBBiG),
+is a bi-clustering algorithm optimized for discovery of overlapping bicluster in  spare binary matrices of data (Gusenleitner et al. in review).  
+
+It can be applied to any binary (1,0) matrix, however we have optimized it for discovery of modules in matrices of discretized p-values from gene set enrichment analysis (GSA) of hundreds of datasets. It could be applied to discretized p-values from any analysis or to other sources of binary data. We apply iBBiG to meta-GSA to enable integrated analysis over hundreds of gene expression datasets.  By integrated data at the levels of GSA results, we avoid the need to match probe/genes across multiple datasets, making large scale data integration a tractable problem.
+
+
+iBBiG scales well with the dimensions of meta-datasets and is tolerant to noise characteristic of genomic data. It outperformed other traditional clustering approaches (Hierarchical clustering, k-means) or biclustering methods (bimax, fabia, coalesce) when applied to simulated data. 
+
+
+\section{Application to simulated dataset}
+To demonstrate iBBiG, we will use a simulated binary dataset of 400 rows x 400 columns (as described by Gusenleitner et al.), in 1 indicates a positive association (or p<0.05)  between a gene set (row) and a pair of clinical covariates (column), and 0 represents a lack of association.
+
+To simulate random noise characteristically observed in genomics
+data, 10\% random background noise (value of 1) was introduced
+into the matrix. 
+
+The matrix was seeded with seven artificial modules or
+bi-clusters (M1-M7; Figure 1) by assigning associations (value of 1)
+to its column and row pairs. To replicate the expected properties of
+real data, seeded modules partially overlapped in columns, in rows
+and in both directions. M1 gene sets overlap with most other modules
+with the exception of M3. M2 has overlapping covariates with
+modules M4-7. 
+
+Artificial modules also have highly varying sizes and
+included "wide" modules driven by a large number of covariates
+and only a few gene sets and "tall" modules like M1 which contained
+25 covariates and a large number of gene sets (n=250). This
+type of module might represent a complex, well-characterized biological
+process such as proliferation. 
+
+In real data the signal strength will vary both between and within modules. Therefore to simulate variance among modules, random noise (replacing 1 values with 0) was imposed to produce modules with different signal strengths (Figure 1). Within a module, we expect to see few strong signals (gene sets associated with all covariates) and many weaker signals. Therefore within each module, a noise gradient was also applied so that the first gene sets had a greater number of associations (Figure 1). This overlaid noise gradient ranged from 10 to 60\% and varied between modules (Table 1).
+
+
+To create this simulated data as described in Gusenleitner et al. use the function \Rfunction{makeArtifical} which creates an object of class \Rclass{iBBiG}, which extends the class \Rclass{biclust}.
+
+<<Arti, fig=TRUE>>=
+library(iBBiG)
+binMat<-makeArtificial()
+binMat
+plot(binMat)
+@
+
+The class of BiClust contains the Number of clusters and 2 logical matrices which indicate if a row or column are present in a cluster
+
+<<Obj>>=
+str(binMat)
+Number(binMat)
+RowxNumber(binMat)[1:2,]
+NumberxCol(binMat)[,1:2]
+@
+
+The matrix RowxNumber  is a logical matrix with nRow equal to that of the binMat and the number of columns are the number of detected clusters. Conversely NumberxCol has the dimension Number of CLusters x Number of Cols of binMat
+
+To run iBBiG on this binary matrix, simply call the function iBBiG.  The function \Rfunction{plot} and \Rfunction{statClust} will provide  a visual representation and statistical summary of the results of the cluster analysis.
+
+<<iBBiG, fig=TRUE>>=
+res<- iBBiG(binMat@Seeddata, nModules=10)
+plot(res)
+analyzeClust(res,binMat)
+@
+
+
+The structure of iBBiG differs from BiClust in that it contains. ClusterScores are the scores for each module. RowScoreNumber are the scores for each row in the cluster. Seeddata is a copy of binMat
+
+<<strClass>>=
+str(binMat)
+RowScorexNumber(res)[1:2,]
+Clusterscores(res)
+Seeddata(res)[1:2,1:2]
+@
+
+There are also the slots for info and Parameters which can contain additional user-entered information about the analysis
+We can subset or reordering the results
+<<Filter>>=
+res[1:3]
+res[c(4,2,1)]
+res[1, drop=FALSE]
+@
+
+
+
+
+
+
+\section{Availing of biclust functions}
+
+An object from iBBiG extends the class biclust and can therefore avail of methods available to a biclust object. For example, there are several plot functions in BiClust
+
+<<biclustPlots, eval=FALSE >>=
+class(res)
+
+par(mfrow=c(2,1))
+drawHeatmap2(res@Seeddata, res, number=4)
+biclustmember(res,res@Seeddata)
+
+biclustbarchart(res@Seeddata, Bicres=res)
+
+plotclust(res, res@Seeddata)
+@
+
+
+Statistical measures of biclustering performance including Chia and Karuturi Function, Coherence measures and F Statistics.
+
+<<biclusStat, eval=FALSE, echo=FALSE>>=
+## Need to fix bug that @RowxNumber and @NumberxCol are binary instead of logical in iBBiG... simple enough and then more biclust functions  should work
+ChiaKaruturi(res@Seeddata, res, 4)
+@
+
+There are function to process data, binarize or discretize data. For example, given gene expression data we can binarize or discretize the data matrix as follows and this can be input into iBBiG
+
+<<biclustBasic,eval=FALSE>>=
+data(BicatYeast)
+BicatYeast[1:5,1:5]
+binarize(BicatYeast[1:5,1:5], threshold=0.2)
+discretize(BicatYeast[1:5,1:5])
+@
+
+
+<<Writebiclust,eval=FALSE>>=
+writeBiclusterResults("Modules.txt", res, bicName="Output from iBBiG with default parameters", geneNames=rownames(res@Seeddata), arrayNames=colnames(res@Seeddata))
+
+@
+
+
+
+%------------------------------------------------------------
+\section{Session Info}
+%------------------------------------------------------------ 
+<<sessionInfo,echo=FALSE,results=tex>>=
+toLatex(sessionInfo())
+@
+
+\appendix
+
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{0}
+
+\end{thebibliography}
+
+
+\end{document}

@@ -1,0 +1,28 @@
+useDynLib(iBBiG, .registration=TRUE)
+
+import(biclust)
+importFrom('stats4', plot)
+importFrom('ade4', dist.binary)
+importFrom('xtable', xtable)
+
+
+exportMethods(
+    "plot",
+    "show",
+    "summary",
+    "RowScorexNumber",
+    "Clusterscores",
+    "Seeddata",
+    "Parameters",
+    "RowxNumber",  
+    "NumberxCol", 
+    "Number", 
+    "info",
+    "analyzeClust",
+    "JIdist"
+)
+
+export("iBBiG", "makeArtificial","makeSimDesignMat")
+exportClasses(
+    "iBBiG" 
+)
