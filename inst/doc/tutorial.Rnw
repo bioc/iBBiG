@@ -103,9 +103,49 @@ To run iBBiG on this binary matrix, simply call the function iBBiG.  The functio
 <<iBBiG, fig=TRUE>>=
 res<- iBBiG(binMat@Seeddata, nModules=10)
 plot(res)
-analyzeClust(res,binMat)
 @
 
+
+If you wish to compare 2 iBBiG or Biclust results, for example a prediction and a gold standard (GS). The function JIdist will calculate the Jaccard Index between clusters between two Biclust or iBBiG object.  
+
+
+By default, it calculates the distance between each column,  but setting the margin to row or both, will calculate the JI distance between the rows, or an average of rows/cols.  
+
+By default, it returns data.frame with 2 columns, the column n indicates which cluster was the best match (max JI) to each cluster of the second iBBiG object (GS) and the column JI contains the JI distance between the columns of these 2 clusters.  If best=FALSE, it will return the distance matrix instead of the best match.
+
+
+<<JI>>=
+JIdist(res,binMat)
+JIdist(res,binMat, margin="col", best=FALSE)
+
+JIdist(res,binMat, margin="col")
+JIdist(res,binMat, margin="row")
+JIdist(res,binMat, margin="both")
+@
+
+To view the code of the function JIdist
+
+<<JIcode>>=
+showMethods(JIdist)
+getMethod("JIdist",  signature(clustObj="iBBiG", GS="iBBiG"))
+@
+
+
+
+To extract performance statistics between 2 iBBiG results, use analyzeClust, which will take a single iBBiG result object or a list of object and compare these to a gold standard (another iBBiG of biclust object). Again results can be based on matches to the best row, col or both.
+
+<<AC>>=
+analyzeClust(res,binMat)
+analyzeClust(res,binMat, margin="col")
+@
+
+
+Again to view the code of the function, you could:
+
+<<ACcode, eval=FALSE>>=
+showMethods(analyzeClust)
+getMethod("analyzeClust",  signature(clustObj="iBBiG", GS="iBBiG"))
+@
 
 The structure of iBBiG differs from BiClust in that it contains. ClusterScores are the scores for each module. RowScoreNumber are the scores for each row in the cluster. Seeddata is a copy of binMat
 
@@ -128,7 +168,6 @@ res[1, drop=FALSE]
 
 
 
-
 \section{Availing of biclust functions}
 
 An object from iBBiG extends the class biclust and can therefore avail of methods available to a biclust object. For example, there are several plot functions in BiClust
@@ -146,12 +185,7 @@ plotclust(res, res@Seeddata)
 @
 
 
-Statistical measures of biclustering performance including Chia and Karuturi Function, Coherence measures and F Statistics.
-
-<<biclusStat, eval=FALSE, echo=FALSE>>=
-## Need to fix bug that @RowxNumber and @NumberxCol are binary instead of logical in iBBiG... simple enough and then more biclust functions  should work
-ChiaKaruturi(res@Seeddata, res, 4)
-@
+Statistical measures of biclustering performance including Chia and Karuturi Function, Coherence measures and F Statistics are available within the biclust R packages. 
 
 There are function to process data, binarize or discretize data. For example, given gene expression data we can binarize or discretize the data matrix as follows and this can be input into iBBiG
 
@@ -161,6 +195,17 @@ BicatYeast[1:5,1:5]
 binarize(BicatYeast[1:5,1:5], threshold=0.2)
 discretize(BicatYeast[1:5,1:5])
 @
+
+
+The sub-matrices of each cluster can be extracted from the original matrix, using the function bicluster
+
+<<bicluser>>=
+Modules<-bicluster(res@Seeddata, res, 1:3)
+str(Modules)
+Modules[[1]][1:3,1:4]
+@
+
+To write results to a file use the following:
 
 
 <<Writebiclust,eval=FALSE>>=

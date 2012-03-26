@@ -275,9 +275,11 @@ setMethod("[", 'iBBiG',
             return(x)
           })
 
+#setClassUnion("iBBiGorBiclust", c("iBBiG","Biclust")) 
 
 setGeneric("JIdist", function(clustObj, GS,...) standardGeneric("JIdist"))
-setMethod("JIdist", c('iBBiG','iBBiG'), 
+#setMethod("JIdist", c('iBBiGorBiclust','iBBiGorBiclust'), 
+setMethod("JIdist", c('Biclust','Biclust'),
 function(clustObj, GS, margin="col", best=TRUE) {
   ## Calculates Jaccard Index between, each Module and modules discovered
   ## if best is TRUE, it will report the highest JI for each module
@@ -320,12 +322,26 @@ function(clustObj, GS, margin="col", best=TRUE) {
 
 setGeneric("analyzeClust", function(clustObj, GS,...) standardGeneric("analyzeClust"))
 setMethod("analyzeClust", c('iBBiG','iBBiG'),
+  function(clustObj,GS, ...) {
+  clustObj <-list(clustObj)
+  print(class(clustObj))
+	analyzeClust(clustObj, GS, ...)
+	})
+
+setMethod("analyzeClust", c('Biclust','iBBiG'),
+  function(clustObj,GS, ...) {
+  clustObj <-list(as(clustObj, "iBBiG"))
+  print(class(clustObj))
+  analyzeClust(clustObj, GS, ...)
+	})
+setMethod("analyzeClust", c('list','iBBiG'),
 function(clustObj,GS,  margin="col",stats=TRUE, type="bestRun",n=NULL,parameters=NULL) {
   ## This will report the best cluster, JE, size and sensivity, specificity
   ## PPV and NPV of a given cluster (clustObj) and the truth GS
   ## Both clustObj and GS are of class biclust
   ## n is optional and not required, but can be used to give the function res[[20]]
   ## Paramters is any optional text regarding the run, for example test paramters eg parameters=names(res)[n]
+
   if (!is.null(n))  {
     clustObj<-clustObj[[n]]
     n = rep(n, nC)
@@ -385,6 +401,7 @@ function(clustObj,GS,  margin="col",stats=TRUE, type="bestRun",n=NULL,parameters
   }
   
   # Parse List
+  if (length(clustObj)==1) unlist(clustObj)
   
   if(is.list(clustObj)) {
     

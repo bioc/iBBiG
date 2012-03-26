@@ -33,7 +33,9 @@
 \alias{summary,iBBiG-method}
 \alias{[,iBBiG-method}
 \alias{analyzeClust,iBBiG,iBBiG-method}
+\alias{analyzeClust,list,iBBiG-method}
 \alias{JIdist,iBBiG,iBBiG-method}
+\alias{JIdist,Biclust,iBBiG-method}
   
 \title{Class \code{"iBBiG"}}
 \description{
@@ -93,6 +95,43 @@ Further functions for viewing and clustering binary data are available in the pa
 
 \examples{
 showClass("iBBiG")
+binMat<-makeArtificial()
+binMat
+
+## Create a binary matrix of 400 rows v 400 cols
+## Its created as a Biclust object, so its easier to visualize
+plot(binMat)
+
+## Perform biclustering analysis on the binary matrix
+res<- iBBiG(binMat@Seeddata, nModules=8)
+res
+plot(res)
+
+## Compare 2 iBBiG or Biclust results
+analyzeClust(res, binMat)
+
+## Subset a cluster
+
+res[4]
+res[1:2]
+
+
+## As iBBiG extends the class Biclust can use Biclust functions on it
+## View the rows and columns of an iBBiG object
+
+## Create a list of matrices, one for each cluster
+Modules<-bicluster(res@Seeddata, res)
+length(Modules)
+lapply(Modules, dim)
+
+# Or extract a list of a specific cluster
+M4<-bicluster(res@Seeddata, res, 4)
+dim(M4[[1]])
+str(M4)
+M4[[1]][1:10,1:5]
+
+
+
 }
 \keyword{clustering}
 \keyword{GSEA}
