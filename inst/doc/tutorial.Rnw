@@ -125,8 +125,9 @@ JIdist(res,binMat, margin="both")
 
 To view the code of the function JIdist
 
-<<JIcode>>=
+<<JIcode, eval=FALSE>>=
 showMethods(JIdist)
+getMethod(iBBiG:::JIdist, signature(clustObj = "iBBiG", GS = "iBBiG"))
 getMethod("JIdist",  signature(clustObj="iBBiG", GS="iBBiG"))
 @
 
