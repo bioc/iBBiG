@@ -44,41 +44,28 @@ library(iBBiG)
 
 
 \section{iBBiG}
-Iterative Binary Bi-clustering of Gene sets (iBBiG),
-is a bi-clustering algorithm optimized for discovery of overlapping bicluster in  spare binary matrices of data (Gusenleitner et al. in review).  
+Iterative Binary Bi-clustering of Gene sets (iBBiG)
+is a bi-clustering algorithm optimized for discovery of overlapping biclusters in spare binary matrices of data (Gusenleitner \emph{et al.} in review).  
 
-It can be applied to any binary (1,0) matrix, however we have optimized it for discovery of modules in matrices of discretized p-values from gene set enrichment analysis (GSA) of hundreds of datasets. It could be applied to discretized p-values from any analysis or to other sources of binary data. We apply iBBiG to meta-GSA to enable integrated analysis over hundreds of gene expression datasets.  By integrated data at the levels of GSA results, we avoid the need to match probe/genes across multiple datasets, making large scale data integration a tractable problem.
-
+We have optimized this method for the discovery of modules in matrices of discretized \emph{p}-values from gene set enrichment analysis (GSA) of hundreds of datasets. However, it could be applied to any binary (1,0) matrix, such as discretized \emph{p}-values from any sources of binary data. We apply iBBiG to meta-GSA to enable integrated analysis over hundreds of gene expression datasets.  By integrating data at the levels of GSA results, we avoid the need to match probes/genes across multiple datasets, making large scale data integration a tractable problem.
 
 iBBiG scales well with the dimensions of meta-datasets and is tolerant to noise characteristic of genomic data. It outperformed other traditional clustering approaches (Hierarchical clustering, k-means) or biclustering methods (bimax, fabia, coalesce) when applied to simulated data. 
 
 
 \section{Application to simulated dataset}
-To demonstrate iBBiG, we will use a simulated binary dataset of 400 rows x 400 columns (as described by Gusenleitner et al.), in 1 indicates a positive association (or p<0.05)  between a gene set (row) and a pair of clinical covariates (column), and 0 represents a lack of association.
+To demonstrate iBBiG, we will use a simulated binary dataset of 400 rows x 400 columns (as described by Gusenleitner \emph{et al.}), in which a $1$ indicates a positive association (or $p < 0.05$) between a gene set (row) and the results of a pairwise test between clinical covariates (column), and a $0$ represents a lack of association.
 
-To simulate random noise characteristically observed in genomics
-data, 10\% random background noise (value of 1) was introduced
-into the matrix. 
+To simulate random noise characteristically observed in genomic data, 10\% random background noise (value of $1$) was introduced into the matrix. 
 
 The matrix was seeded with seven artificial modules or
-bi-clusters (M1-M7; Figure 1) by assigning associations (value of 1)
-to its column and row pairs. To replicate the expected properties of
-real data, seeded modules partially overlapped in columns, in rows
-and in both directions. M1 gene sets overlap with most other modules
-with the exception of M3. M2 has overlapping covariates with
-modules M4-7. 
+bi-clusters (M1-M7; Figure 1) by assigning associations (value of 1) to its column and row pairs. To replicate the expected properties of real data, seeded modules partially overlapped in columns, in rows and in both rows and columns simultaneously. M1 gene sets overlap with most other modules with the exception of M3. M2 has overlapping pairwise tests with modules M4-7. 
 
-Artificial modules also have highly varying sizes and
-included "wide" modules driven by a large number of covariates
-and only a few gene sets and "tall" modules like M1 which contained
-25 covariates and a large number of gene sets (n=250). This
-type of module might represent a complex, well-characterized biological
-process such as proliferation. 
+Artificial modules also have highly varying sizes and aspect ratios, including "wide" modules driven by a large number of pairwise tests and only a few gene sets and "tall" modules like M1 which consist of 25 pairwise tests and a large number of gene sets ($n=250$). This latter type of module might represent a complex, well-characterized biological process such as proliferation. 
 
-In real data the signal strength will vary both between and within modules. Therefore to simulate variance among modules, random noise (replacing 1 values with 0) was imposed to produce modules with different signal strengths (Figure 1). Within a module, we expect to see few strong signals (gene sets associated with all covariates) and many weaker signals. Therefore within each module, a noise gradient was also applied so that the first gene sets had a greater number of associations (Figure 1). This overlaid noise gradient ranged from 10 to 60\% and varied between modules (Table 1).
+In a real data set the signal strength will vary both between and within modules. Variance between modules was simulated by imposing random noise (1 -> 0 replacement) with different signal strengths on the modules (Figure 1). Within a module, we expect to see a few strong signals (gene sets associated with all pairwise tests) and many weaker signals. Therefore within each module, a noise gradient was also applied so that the first gene sets had the greatest number of associations (Figure 1). This overlaid noise gradient ranged from 10 to 60\% and varied between modules (Table 1).
 
 
-To create this simulated data as described in Gusenleitner et al. use the function \Rfunction{makeArtifical} which creates an object of class \Rclass{iBBiG}, which extends the class \Rclass{biclust}.
+To create this simulated data as described in Gusenleitner, \emph{et al.} use the function \Rfunction{makeArtifical} which creates an object of class \Rclass{iBBiG}, an extension of \Rclass{biclust}.
 
 <<Arti, fig=TRUE>>=
 library(iBBiG)
@@ -87,7 +74,7 @@ binMat
 plot(binMat)
 @
 
-The class of BiClust contains the Number of clusters and 2 logical matrices which indicate if a row or column are present in a cluster
+The class \Rclass{BiClust} contains the number of clusters and two logical matrices which indicate whether a row or column are present in the cluster.
 
 <<Obj>>=
 str(binMat)
@@ -96,22 +83,18 @@ RowxNumber(binMat)[1:2,]
 NumberxCol(binMat)[,1:2]
 @
 
-The matrix RowxNumber  is a logical matrix with nRow equal to that of the binMat and the number of columns are the number of detected clusters. Conversely NumberxCol has the dimension Number of CLusters x Number of Cols of binMat
+The matrix \Rclass{RowxNumber} is a logical matrix having a number of rows equal to that of \Rclass{binMat} and a number of columns equal to the number of detected clusters. \Rclass{NumberxCol} is reversed; this class has a row count equal to the number of clusters and a column count of the number of columns of \Rclass{binMat}.
 
-To run iBBiG on this binary matrix, simply call the function iBBiG.  The function \Rfunction{plot} and \Rfunction{statClust} will provide  a visual representation and statistical summary of the results of the cluster analysis.
+To run iBBiG on this artificial binary matrix, simply call the function \Rfunction{iBBiG}.  The function \Rfunction{plot} and \Rfunction{statClust} will provide  a visual representation and statistical summary of the results of the cluster analysis.
 
 <<iBBiG, fig=TRUE>>=
 res<- iBBiG(binMat@Seeddata, nModules=10)
 plot(res)
 @
 
+If you wish to compare two \Rfunction{iBBiG} or \Rfunction{Biclust} results, for example a prediction and a gold standard (GS), the function \Rfunction{JIdist} will calculate the Jaccard Index distance between two \Rclass{Biclust} or \Rclass{iBBiG} result objects. By default, it calculates the distances between each column. Setting $margin=row$ or $margin=both$ will cause the function to calculate instead the JI distance between the rows, or an average of rows/columns.  
 
-If you wish to compare 2 iBBiG or Biclust results, for example a prediction and a gold standard (GS). The function JIdist will calculate the Jaccard Index between clusters between two Biclust or iBBiG object.  
-
-
-By default, it calculates the distance between each column,  but setting the margin to row or both, will calculate the JI distance between the rows, or an average of rows/cols.  
-
-By default, it returns data.frame with 2 columns, the column n indicates which cluster was the best match (max JI) to each cluster of the second iBBiG object (GS) and the column JI contains the JI distance between the columns of these 2 clusters.  If best=FALSE, it will return the distance matrix instead of the best match.
+By default, Rfunction{JIdist} returns a \Rclass{data.frame} with 2 columns, the column $n$ indicating which cluster was the best match (maximum JI) to each cluster of the second iBBiG object (GS). The column $JI$ contains the Jaccard Index distance between the columns of these two clusters.  If $best=FALSE$, the function will return the distance matrix instead of the best match.
 
 
 <<JI>>=
@@ -133,7 +116,7 @@ getMethod("JIdist",  signature(clustObj="iBBiG", GS="iBBiG"))
 
 
 
-To extract performance statistics between 2 iBBiG results, use analyzeClust, which will take a single iBBiG result object or a list of object and compare these to a gold standard (another iBBiG of biclust object). Again results can be based on matches to the best row, col or both.
+To extract performance statistics between two \Rfunction{iBBiG} results, use \Rfunction{analyzeClust}, which will take a single \Rclass{iBBiG} result object or a list of objects and compare these to a gold standard (another \Rclass{iBBiG} or \Rclass{biclust} object). Again results can be based on matches to the best row, column or both.
 
 <<AC>>=
 analyzeClust(res,binMat)
@@ -148,7 +131,7 @@ showMethods(analyzeClust)
 getMethod("analyzeClust",  signature(clustObj="iBBiG", GS="iBBiG"))
 @
 
-The structure of iBBiG differs from BiClust in that it contains. ClusterScores are the scores for each module. RowScoreNumber are the scores for each row in the cluster. Seeddata is a copy of binMat
+The structure of \Rclass{iBBiG} differs from \Rclass{BiClust} in that it contains ClusterScores. ClusterScores are the scores for each module. RowScoreNumber are the scores for each row in the cluster. \Rclass{Seeddata} is a copy of \Rclass{binMat}.
 
 <<strClass>>=
 str(binMat)
@@ -157,8 +140,8 @@ Clusterscores(res)
 Seeddata(res)[1:2,1:2]
 @
 
-There are also the slots for info and Parameters which can contain additional user-entered information about the analysis
-We can subset or reordering the results
+There are also the slots for info and Parameters which can contain additional user-entered information about the analysis.
+We can subset or reorder the results like so: 
 <<Filter>>=
 res[1:3]
 res[c(4,2,1)]
@@ -166,12 +149,9 @@ res[1, drop=FALSE]
 @
 
 
+\section{Using biclust functions}
 
-
-
-\section{Availing of biclust functions}
-
-An object from iBBiG extends the class biclust and can therefore avail of methods available to a biclust object. For example, there are several plot functions in BiClust
+An object from \Rclass{iBBiG} extends the class \Rclass{biclust} and can therefore use methods available to a \Rclass{biclust} object. For example, there are several plot functions in \Rclass{BiClust}
 
 <<biclustPlots, eval=FALSE >>=
 class(res)
@@ -186,7 +166,7 @@ plotclust(res, res@Seeddata)
 @
 
 
-Statistical measures of biclustering performance including Chia and Karuturi Function, Coherence measures and F Statistics are available within the biclust R packages. 
+Statistical measures of biclustering performance including the Chia and Karuturi Function, Coherence measures and F Statistics are available within the \Rclass{biclust} R packages. 
 
 There are function to process data, binarize or discretize data. For example, given gene expression data we can binarize or discretize the data matrix as follows and this can be input into iBBiG
 
@@ -198,7 +178,7 @@ discretize(BicatYeast[1:5,1:5])
 @
 
 
-The sub-matrices of each cluster can be extracted from the original matrix, using the function bicluster
+The sub-matrices of each cluster can be extracted from the original matrix, using the function \Rfunction{bicluster}
 
 <<bicluser>>=
 Modules<-bicluster(res@Seeddata, res, 1:3)
