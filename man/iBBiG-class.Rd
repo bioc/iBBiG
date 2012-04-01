@@ -34,9 +34,11 @@
 \alias{[,iBBiG-method}
 \alias{analyzeClust,iBBiG,iBBiG-method}
 \alias{analyzeClust,list,iBBiG-method}
+\alias{analyzeClust,Biclust,iBBiG-method}
 \alias{JIdist,iBBiG,iBBiG-method}
 \alias{JIdist,Biclust,iBBiG-method}
-  
+\alias{JIdist,Biclust,Biclust-method}
+
 \title{Class \code{"iBBiG"}}
 \description{
 Class to contain and describe result of iBBiG Anlaysis
