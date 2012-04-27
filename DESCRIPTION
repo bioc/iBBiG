@@ -14,5 +14,5 @@ Reference: Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane
         Bioinformatics. Submitted
 License: Artistic-2.0
 URL: http://bcb.dfci.harvard.edu/~aedin/publications/
-biocViews: Bioinformatics, Clustering,Annotation
+biocViews: Clustering, Annotation, GeneSetEnrichment
 Packaged: 2012-03-19 17:47:10 UTC; vobencha
