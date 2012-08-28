@@ -44,6 +44,9 @@ Bioinformatics. In review.
 Also see \code{\link[biclust]{biclust}} ~~
 }
 \examples{
+set.seed(123)
+
+#create simulated datasets
 binMat<-makeArtificial()
 binMat
 plot(binMat)
@@ -52,4 +55,29 @@ plot(res)
 res
 
 
+<<<<<<< .mine
+## Subset a cluster
+
+res[4]
+res[1:2]
+
+
+## As iBBiG extends the class Biclust can use Biclust functions on it
+## View the rows and columns of an iBBiG object
+
+## Create a list of matrices, one for each cluster
+Modules<-bicluster(res@Seeddata, res)
+length(Modules)
+lapply(Modules, dim)
+
+# Or extract a list of a specific cluster
+M4<-bicluster(res@Seeddata, res, 4)
+dim(M4[[1]])
+str(M4)
+M4[[1]][1:10,1:3]
+
+
+
+=======
+>>>>>>> .r67642
 }

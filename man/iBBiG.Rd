@@ -64,6 +64,7 @@ Aedin Culhane, Daniel Gusenleitner
 Further functions for viewing and clustering binaray data are available in the package biclust.  We have written iBBiG and its classes so that it is compatible with biclust, and the class iBBiG inherits Biclust-class.
 }
 \examples{
+set.seed(123)
 binMat<-makeArtificial()
 plot(binMat)
 res<- iBBiG(binMat@Seeddata, nModules=10)

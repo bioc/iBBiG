@@ -58,6 +58,7 @@ Further functions for viewing and clustering binaray data are available in the p
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
+set.seed(123)
 arti<-makeArtificial()
 plot(arti)
  }
