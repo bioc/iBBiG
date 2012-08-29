@@ -97,6 +97,9 @@ Further functions for viewing and clustering binary data are available in the pa
 
 \examples{
 showClass("iBBiG")
+
+
+#create simulated datasets
 binMat<-makeArtificial()
 binMat
 
@@ -127,10 +130,10 @@ length(Modules)
 lapply(Modules, dim)
 
 # Or extract a list of a specific cluster
-M4<-bicluster(res@Seeddata, res, 4)
-dim(M4[[1]])
-str(M4)
-M4[[1]][1:10,1:5]
+M1<-bicluster(res@Seeddata, res, 1)
+dim(M1[[1]])
+str(M1)
+M1[[1]][1:5,1:3]
 
 
 

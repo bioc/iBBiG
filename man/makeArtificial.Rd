@@ -10,7 +10,7 @@ Create a binary matrix of 400 rows x 400 columns, where 1 is a positive associat
 
 }
 \usage{
-makeArtificial(nRow = 400, nCol = 400, noise = 0.1, verbose = TRUE, dM = makeSimDesignMat(verbose = verbose))
+makeArtificial(nRow = 400, nCol = 400, noise = 0.1, verbose = TRUE, dM = makeSimDesignMat(verbose = verbose), seed=123)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,9 @@ Verbose output. Default is TRUE
 }
   \item{dM}{
 A design matrix specifying where the columns are. The function makeSimDesignMat create the matrix which specifies the design matrix
+}
+\item{seed}{
+Integer, passed to function set.seed() the random-number generator function, so that the articical simulated data is reproduced. If you wish to generate a random simulated data set  use seed=NULL
 }
 }
 \details{
