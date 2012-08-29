@@ -182,12 +182,14 @@ setMethod("plot", "iBBiG",
      }
 
     iBBiGmat<-t(iBBiGmat)[,ncol(iBBiGmat):1]
-    image(iBBiGmat,col=col,xlab='Pairwise Tests',ylab='Gene Signatures',axes=F,...)
+    image(iBBiGmat,col=col,xlab='Phenotypes',ylab='Gene Signatures',axes=F,...)
     if (length(legendcol)>1) legend("topright", legend=as.character(paste("M", n, sep="")), fill=legendcol, col=legendcol)
     if (!is.null(title)) title(main = main, font.main = 4, ...)
 
-    barplot(apply(x@NumberxCol, 1, sum), col= legendcol, main="Module Size", ylab="Number of Pairwise Tests", las=2)
+    barplot(apply(x@NumberxCol, 1, sum), col= legendcol, main="Module Size", ylab="Number (Phenotypes)", las=2)
 	
+    #barplot(apply(x@RowxNumber, 3, sum), col= legendcol, main="Module Size", ylab="Number of Gene Sets", las=2)
+     
     if(length(x@Clusterscores)>0) { 
 	   barplot(x@Clusterscores, col= legendcol, main="Module Score", ylab="Pairwise Test Score", las=2)
 	   clusterWeight <-log(apply(x@NumberxCol,1,sum)/ncol(x@NumberxCol)*(x@Clusterscores))

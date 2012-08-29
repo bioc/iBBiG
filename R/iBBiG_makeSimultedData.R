@@ -45,13 +45,16 @@ makeSimDesignMat<-function(verbose=TRUE) {
    }
 
 
-makeArtificial<-function(nRow=400,nCol=400,noise=0.1, verbose=TRUE, dM=makeSimDesignMat(verbose=verbose)){
+makeArtificial<-function(nRow=400,nCol=400,noise=0.1, verbose=TRUE, dM=makeSimDesignMat(verbose=verbose), seed=123){
    ##creates an artificial dataset 
    ## Given a design Matrix(dM) which specifies the cluster size and density
    ## where the nrow = the number of clusters and the ncol = 6 with the columns
    ## headings "startC","startR","endC","endR","densityH","densityL". This function
    ## creates an matrix of simulated  (artifical,arti) data.
    require(biclust)
+
+   if (!is.null(seed)) set.seed(seed)
+
    arti<-matrix(0,nRow,nCol) 
 
    arti[1:nRow,1:nCol]<-as.integer(runif(nRow*nCol)<noise)
