@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
 #include <R.h>
 #include <Rinternals.h>
 #include "iBBiG.h"
