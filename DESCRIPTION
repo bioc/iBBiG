@@ -1,5 +1,6 @@
 Package: iBBiG
 Type: Package
+Title: Iterative Binary Biclustering of Genesets
 Version: 1.35.1
 Date: 2011-11-23
 Author: Daniel Gusenleitner, Aedin Culhane
